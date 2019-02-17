@@ -1,10 +1,10 @@
 package FinalProject;
 
-public class NumberMapper implements JsonMapper {
+public class NumberMapper implements JsonMapper <Number> {
 
 
     @Override
-    public void write(Object obj, MyJsonWriter writer) {
+    public void write(Number obj, MyJsonWriterStream writer) {
 
     }
 }

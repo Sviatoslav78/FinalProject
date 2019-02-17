@@ -2,9 +2,9 @@ package FinalProject;
 
 import java.util.Map;
 
-public class MapMapper implements JsonMapper {
+public class MapMapper implements JsonMapper <Map> {
     @Override
-    public void write(Object obj, MyJsonWriter writer) {
+    public void write(Map obj, MyJsonWriterStream writer) {
 
     }
 }

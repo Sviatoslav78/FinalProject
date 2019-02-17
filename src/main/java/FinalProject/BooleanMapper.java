@@ -1,9 +1,11 @@
 package FinalProject;
 
-public class BooleanMapper implements JsonMapper {
-    StringBuilder stringBuilder = new StringBuilder();
+public class BooleanMapper implements JsonMapper <Boolean>{
 
     @Override
-    public void write(Object obj, MyJsonWriter writer) {
+    public void write(Boolean obj, MyJsonWriterStream writer) {
+        writer.writeBoolean (obj);
+        writer.flush();
     }
+
 }
