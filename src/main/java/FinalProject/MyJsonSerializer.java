@@ -19,8 +19,8 @@ public class MyJsonSerializer {
         mappersCache.put(HashSet.class, CollectionMapper.class);
         mappersCache.put(LinkedHashSet.class, CollectionMapper.class);
         mappersCache.put(TreeSet.class, CollectionMapper.class);
-        mappersCache.put(PrimitiveType.class, PrimitiveArrayMapper.class);
-        mappersCache.put(Object.class, ObjectArrayMapper.class);
+        mappersCache.put(Object[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Object[].class, ObjectArrayMapper.class);
     }
 
     protected String serialize(Object obj) {
@@ -67,7 +67,7 @@ public class MyJsonSerializer {
             } else if (objMapper.equals(CollectionMapper.class)) {
                 new CollectionMapper().write((Collection) obj, writer);
             } else if (objMapper.equals(PrimitiveArrayMapper.class)) {
-                new PrimitiveArrayMapper().write(obj, writer);
+                new PrimitiveArrayMapper().write((Object[])obj, writer);
             } else if (objMapper.equals(ObjectArrayMapper.class)) {
                 new ObjectArrayMapper().write((Object[]) obj, writer);
             } else {
