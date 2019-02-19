@@ -20,7 +20,8 @@ public class MyJsonSerializer {
         mappersCache.put(HashSet.class, CollectionMapper.class);
         mappersCache.put(LinkedHashSet.class, CollectionMapper.class);
         mappersCache.put(TreeSet.class, CollectionMapper.class);
-        mappersCache.put(Object[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Number[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Character[].class, PrimitiveArrayMapper.class);
         mappersCache.put(Object[].class, ObjectArrayMapper.class);
     }
 
