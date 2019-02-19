@@ -1,6 +1,7 @@
 package FinalProject;
 
 import javax.lang.model.type.PrimitiveType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class MyJsonSerializer {
@@ -30,7 +31,7 @@ public class MyJsonSerializer {
         } else {
             Class objMapper = getMapper(obj.getClass());
             if (objMapper.equals(StringMapper.class)) {
-                myJsonWriterString.writeString((String) obj);
+//               new StringMapper().write((String) obj);
             } else if (objMapper.equals(BooleanMapper.class)) {
                 myJsonWriterString.writeBoolean((Boolean) obj);
             } else if (objMapper.equals(NumberMapper.class)) {

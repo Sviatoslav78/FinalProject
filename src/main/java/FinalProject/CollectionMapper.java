@@ -1,6 +1,6 @@
 package FinalProject;
 
-import java.util.Collection;
+import java.util.*;
 
 public class CollectionMapper implements JsonMapper<Collection> {
     @Override
@@ -8,14 +8,36 @@ public class CollectionMapper implements JsonMapper<Collection> {
         // ArrayList
         writer.writeArrayBegin();
         for (Object objElement : obj) {
+                //check affiliations with class String
             if (objElement.getClass().equals(String.class)) {
-                new StringMapper().write((String)objElement,writer);
+                new StringMapper().write((String) objElement, writer);
+                //check affiliations with class Number
             } else if (objElement.getClass().getSuperclass().equals(Number.class)) {
-                writer.writeNumber((Number) objElement);
+                new NumberMapper().write((Number) objElement, writer);
+                //check affiliations with class Boolean
             } else if (objElement.getClass().equals(Boolean.class)) {
-                writer.writeBoolean((Boolean) objElement);
+                new BooleanMapper().write((Boolean) objElement, writer);
+                //check affiliations with class Character
             } else if (objElement.getClass().equals(Character.class)) {
-                writer.writeString(objElement.toString());
+                new StringMapper().write(objElement.toString(), writer);
+                //check affiliations with abstract Classes of interface Collection
+            } else if (objElement.getClass().getSuperclass().equals(AbstractList.class)
+                    || objElement.getClass().getSuperclass().equals(AbstractSet.class)) {
+                new CollectionMapper().write((Collection) objElement, writer);
+                //check affiliations with class AbstractMap
+            } else if (objElement.getClass().getSuperclass().equals(AbstractMap.class)) {
+                new MapMapper().write((Map) objElement, writer);
+                //check affiliations with Object[], choose: PrimitiveTypes(without boolean) or Other
+            } else if (objElement.getClass().equals(Object[].class)) {
+                if (objElement.getClass().getComponentType().getSuperclass().equals(Number.class) ||
+                        objElement.getClass().getComponentType().equals(Character.class)) {
+                    new PrimitiveArrayMapper().write((Object[]) objElement, writer);
+                } else {
+                    new ObjectArrayMapper().write((Object[]) objElement, writer);
+                }
+                //Pojo
+            } else {
+                new PojoMapper().write(objElement.toString(), writer);
             }
             writer.writeSeparator();
         }
@@ -23,3 +45,4 @@ public class CollectionMapper implements JsonMapper<Collection> {
         writer.flush();
     }
 }
+

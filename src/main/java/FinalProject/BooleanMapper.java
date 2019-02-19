@@ -7,5 +7,4 @@ public class BooleanMapper implements JsonMapper <Boolean>{
         writer.writeBoolean (obj);
         writer.flush();
     }
-
 }

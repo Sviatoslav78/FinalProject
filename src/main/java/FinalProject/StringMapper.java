@@ -7,4 +7,5 @@ public class StringMapper implements JsonMapper <String> {
         writer.writeString((String) obj);
         writer.flush();
     }
+
 }
