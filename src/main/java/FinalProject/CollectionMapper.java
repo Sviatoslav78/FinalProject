@@ -3,9 +3,10 @@ package FinalProject;
 import java.util.*;
 
 public class CollectionMapper implements JsonMapper<Collection> {
+
+    //creates record of objects classes implements Collection
     @Override
     public void write(Collection obj, MyJsonWriterStream writer) {
-        // ArrayList
         writer.writeArrayBegin();
         for (Object objElement : obj) {
                 //check affiliations with class String
