@@ -1,72 +1,72 @@
 package FinalProject;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
 public class MyJsonWriter {
+    Writer writer;
 
-    StringBuilder stringBuilder;
-
-    public MyJsonWriter() {
-        stringBuilder = new StringBuilder();
-    }
-
-    void writeObjectBegin() {
-        stringBuilder.append("{");
-    }
-
-    //если предыдущий символ – запятая, удаляет его
-    void writeObjectEnd() {
-        if (stringBuilder.substring(stringBuilder.length() - 1).contains(",")) {
-            stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length(), "}");
+    public MyJsonWriter(Writer writer) {
+        if (writer == null) {
+            throw new NullPointerException("out == null");
         } else {
-            stringBuilder.append("}");
+            this.writer = writer;
         }
     }
 
-    void writeArrayBegin() {
-
-        stringBuilder.append("[");
+    void writeObjectBegin() throws IOException {
+        writer.write("{");
     }
 
     //если предыдущий символ – запятая, удаляет его
-    void writeArrayEnd() {
-        if (stringBuilder.substring(stringBuilder.length() - 1).contains(",")) {
-            stringBuilder.replace(stringBuilder.length() - 1, stringBuilder.length(), "]");
-        } else {
-            stringBuilder.append("]");
-        }
+    void writeObjectEnd() throws IOException {
+        writer.write("\b");
+        writer.write("}");
+    }
+
+    void writeArrayBegin() throws IOException {
+        writer.write("[");
+    }
+
+    //если предыдущий символ – запятая, удаляет его
+    void writeArrayEnd() throws IOException {
+        writer.write("\b");
+        writer.write("]");
     }
 
     //данный метод принимает стрингу, при необходимости ескейпит внутри символы, добавляет с обеих сторон «“»
-    void writeString(String s) {
-        stringBuilder.append(("\""));
-        stringBuilder.append(s);
-        stringBuilder.append(("\""));
+    void writeString(String s) throws IOException {
+        writer.write("\"");
+        writer.write(s);
+        writer.write("\"");
     }
 
     //записывает в низ лежащий поток число
-    void writeNumber(Number n) {
-        stringBuilder.append(n);
+    void writeNumber(Number n) throws IOException {
+        writer.write(n.toString());
     }
 
     //добавляет запятую
-    void writeSeparator() {
-        stringBuilder.append(",");
+    void writeSeparator() throws IOException {
+        writer.write(",");
     }
 
     //добавляет двоеточие «:»
-    void writePropertySeparator() {
-        stringBuilder.append(":");
+    void writePropertySeparator() throws IOException {
+        writer.write(":");
     }
 
-    void writeBoolean() {
-        stringBuilder.append(false);
+    void writeBoolean(String b) throws IOException {
+        writer.write(b);
     }
 
-    void writeNull() {
-        stringBuilder.append("null");
+    void writeNull() throws IOException {
+        writer.write("null");
     }
 
-    public void flush() {
-        System.out.println(stringBuilder.toString());
+    void flush() throws IOException {
+        writer.flush();
     }
-
 }
+

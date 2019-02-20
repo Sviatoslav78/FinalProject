@@ -1,10 +1,13 @@
 package FinalProject;
 
-import javax.lang.model.type.PrimitiveType;
+import com.google.gson.internal.Streams;
+
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.*;
 
 public class MyJsonSerializer {
+
     static Map<Class, Class> mappersCache = new HashMap<>();
 
     static {
@@ -25,37 +28,24 @@ public class MyJsonSerializer {
         mappersCache.put(Object[].class, ObjectArrayMapper.class);
     }
 
-    protected String serialize(Object obj) {
-        MyJsonWriterString myJsonWriterString = new MyJsonWriterString();
-        if (obj == null) {
-            myJsonWriterString.writeNull();
-        } else {
-            Class objMapper = getMapper(obj.getClass());
-            if (objMapper.equals(StringMapper.class)) {
-//               new StringMapper().write((String) obj);
-            } else if (objMapper.equals(BooleanMapper.class)) {
-                myJsonWriterString.writeBoolean((Boolean) obj);
-            } else if (objMapper.equals(NumberMapper.class)) {
-                myJsonWriterString.writeNumber((Number) obj);
-            } else if (objMapper.equals(MapMapper.class)) {
-
-            } else if (objMapper.equals(CollectionMapper.class)) {
-
-            } else if (objMapper.equals(PrimitiveArrayMapper.class)) {
-
-            } else if (objMapper.equals(ObjectArrayMapper.class)) {
-
-            } else {
-
-            }
-        }
-        return myJsonWriterString.stringBuilder.toString();
+    protected Class getMapper(Class clazz) {
+        return mappersCache.get(clazz);
     }
 
-    protected void serialize(Object obj, MyJsonWriterStream writer) {
-        //проверить для кастомного класса (getDeclaringClass()???)
+    public String serialize(Object obj) {
         if (obj == null) {
-            new NullMapper().write(null, writer);
+        } else {
+            StringWriter writerAppend = new StringWriter();
+            serialize(obj, (Appendable) writerAppend);
+            return writerAppend.toString();
+        }
+        return null;
+    }
+
+    protected void serialize(Object obj, Appendable writerAppend) {
+        MyJsonWriter writer = new MyJsonWriter(Streams.writerForAppendable(writerAppend));
+        if (obj.equals(null)) {
+            new NullMapper().write(obj, writer);
         } else {
             Class objMapper = getMapper(obj.getClass());
             if (objMapper.equals(StringMapper.class)) {
@@ -69,16 +59,12 @@ public class MyJsonSerializer {
             } else if (objMapper.equals(CollectionMapper.class)) {
                 new CollectionMapper().write((Collection) obj, writer);
             } else if (objMapper.equals(PrimitiveArrayMapper.class)) {
-                new PrimitiveArrayMapper().write((Object[])obj, writer);
+                new PrimitiveArrayMapper().write((Object[]) obj, writer);
             } else if (objMapper.equals(ObjectArrayMapper.class)) {
                 new ObjectArrayMapper().write((Object[]) obj, writer);
             } else {
                 new PojoMapper().write(obj, writer);
             }
         }
-    }
-
-    protected Class getMapper(Class clazz) {
-        return mappersCache.get(clazz);
     }
 }
