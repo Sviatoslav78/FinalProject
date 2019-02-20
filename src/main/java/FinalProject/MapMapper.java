@@ -7,33 +7,26 @@ public class MapMapper implements JsonMapper<Map> {
     @Override
     public void write(Map obj, MyJsonWriter writer) {
 
-        int iterator = 0; //нужен потом, чтобы определить, где ставить двоеточие, а где точку с запятой при серилизации мапы
+        int iterator = 1; //нужен потом, чтобы определить, где ставить двоеточие, а где точку с запятой при серилизации мапы
 
         Set keyset = obj.keySet();
         Object[] keys = keyset.toArray(); // тк в keyset нет метода get
 
-        ArrayList values = (ArrayList) obj.values();
-
+        Collection values = obj.values();
+        Object[] value = values.toArray();
         // по очереди ключ-значение-ключ... записываем list и потом в зависимости от
         // их типа, записываем в стрингбилдер через двоеточя между key:value
 
         ArrayList list = new ArrayList();
 
         for (int i = 0; i < keys.length; i++) {
-            list.add(keys[i]);
-            list.add(values.get(i));
+            list.add(keys[i].toString());
+            list.add(value[i]);
         }
 
         try {
             writer.writeObjectBegin();
             for (Object objElement : list) {
-                // расставляем запятые и двоеточия
-                if (iterator % 2 == 0 && iterator != 0) {
-                    writer.writeSeparator();
-                }
-                if (iterator % 2 == 1 && iterator != 0) {
-                    writer.writePropertySeparator();
-                }
                 //check affiliations with class String
                 if (objElement.getClass().equals(String.class)) {
                     new StringMapper().write((String) objElement, writer);
@@ -64,6 +57,13 @@ public class MapMapper implements JsonMapper<Map> {
                     //Pojo
                 } else {
                     new PojoMapper().write(objElement.toString(), writer);
+                }
+                // расставляем запятые и двоеточия
+                if (iterator % 2 == 0 && iterator != 0) {
+                    writer.writeSeparator();
+                }
+                if (iterator % 2 != 0 && iterator != 0) {
+                    writer.writePropertySeparator();
                 }
                 iterator++;
             }

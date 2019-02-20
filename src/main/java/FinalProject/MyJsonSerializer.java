@@ -8,21 +8,22 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MyJsonSerializer extends Thread{
+public class MyJsonSerializer extends Thread {
 
-    static Lock lock = new ReentrantLock();
-
-    public MyJsonSerializer() {
-
-    }
+//    static Lock lock = new ReentrantLock();
 
     static Map<Class, Class> mappersCache = new HashMap<>();
 
     static {
         mappersCache.put(Boolean.class, BooleanMapper.class);
-        mappersCache.put(Number.class, NumberMapper.class);
+        mappersCache.put(Character.class, StringMapper.class);
+        mappersCache.put(Integer.class, NumberMapper.class);
+        mappersCache.put(Byte.class, NumberMapper.class);
+        mappersCache.put(Long.class, NumberMapper.class);
+        mappersCache.put(Float.class, NumberMapper.class);
+        mappersCache.put(Double.class, NumberMapper.class);
         mappersCache.put(String.class, StringMapper.class);
-        mappersCache.put(Map.class, MapMapper.class);
+        mappersCache.put(HashMap.class, MapMapper.class);
         mappersCache.put(ArrayList.class, CollectionMapper.class);
         mappersCache.put(Vector.class, CollectionMapper.class);
         mappersCache.put(LinkedList.class, CollectionMapper.class);
@@ -44,16 +45,12 @@ public class MyJsonSerializer extends Thread{
         if (obj == null) {
         } else {
             StringWriter writerAppend = new StringWriter();
-            lock.lock();
-            try{
-            serialize(obj, (Appendable) writerAppend);}
-            finally {
-                lock.unlock();
-            }
+            serialize(obj, (Appendable) writerAppend);
             return writerAppend.toString();
         }
         return null;
     }
+
 
     protected void serialize(Object obj, Appendable writerAppend) {
         MyJsonWriter writer = new MyJsonWriter(Streams.writerForAppendable(writerAppend));
@@ -62,7 +59,11 @@ public class MyJsonSerializer extends Thread{
         } else {
             Class objMapper = getMapper(obj.getClass());
             if (objMapper.equals(StringMapper.class)) {
-                new StringMapper().write((String) obj, writer);
+                if(obj.getClass().equals(String.class)){
+                new StringMapper().write((String) obj, writer);}
+                else {
+                    new StringMapper().write(obj.toString(), writer);
+                }
             } else if (objMapper.equals(BooleanMapper.class)) {
                 new BooleanMapper().write((Boolean) obj, writer);
             } else if (objMapper.equals(NumberMapper.class)) {
