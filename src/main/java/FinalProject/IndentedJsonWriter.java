@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 public class IndentedJsonWriter extends MyJsonWriter {
-    int nIncrement = 0;
+    static int nIncrement = 0;
 
     public IndentedJsonWriter(Writer writer) {
         super(writer);
@@ -13,7 +13,7 @@ public class IndentedJsonWriter extends MyJsonWriter {
     @Override
     void writeObjectBegin() throws IOException {
         if (nIncrement == 0) {
-            writer.write("{" + " \n" + "    ");
+            writer.write("{" + "\n" + "\t");
             nIncrement++;
         } else if (nIncrement > 1) {
             nIncrement = 0;
@@ -25,13 +25,13 @@ public class IndentedJsonWriter extends MyJsonWriter {
     @Override
     void writeObjectEnd() throws IOException {
         nIncrement--;
-        writer.write("}" + "\r");
+        writer.write("\r}");
     }
 
     @Override
     void writeArrayBegin() throws IOException {
         if (nIncrement == 0) {
-            writer.write("[" + "\n" + "    ");
+            writer.write("[" + "\n" + "\t");
             nIncrement++;
         } //else if (nIncrement == 1){ }
         else {
@@ -42,20 +42,25 @@ public class IndentedJsonWriter extends MyJsonWriter {
     @Override
     void writeArrayEnd() throws IOException {
         nIncrement--;
-        writer.write("}" + "\r");
+        writer.write("\r]");
     }
 
     @Override
-    void writeSeparator() throws IOException {
-        if (nIncrement == 1) {
-            writer.write("," + "\n" + "    ");
+    void writeSeparator() throws IOException{
+        if(nIncrement == 1) {
+            writer.write("," + "\n" + "\t");
             nIncrement--;
         } else if (nIncrement == 0) {
-            writer.write("," + "\n");
+            writer.write("\n" +"\t");
         } else if (nIncrement < 0) {
             nIncrement = 1;
         } else
-            writer.write(",");
+            writer.write("," );
+    }
+
+    @Override
+    void writePropertySeparator() throws IOException {
+        writer.write(" : ");
     }
 }
 

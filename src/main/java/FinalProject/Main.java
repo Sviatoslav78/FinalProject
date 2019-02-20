@@ -12,11 +12,30 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Main {
     public static void main(String[] args) {
-        Map<Integer,Integer> map=new HashMap<>();
-        map.put(5,7);
-        map.put(1,1);
-        map.put(2,2);
+        ArrayList list = new ArrayList();
+        list.add(3);
+        list.add(6);
+        list.add(8);
 
+        ArrayList list2 = new ArrayList();
+        list.add(3);
+        list.add(6);
+        list.add(8);
+
+        ArrayList list3 = new ArrayList();
+        list.add(3);
+        list.add(6);
+        list.add(8);
+
+        Map<ArrayList,Integer> map=new HashMap<>();
+        map.put(list,7);
+        map.put(list2,1);
+        map.put(list3,2);
+
+//        for (int i = 0; i < 5; i++) {
+//            new Thread(new MyJsonSerializer().serialize(map)).start();
+//        }
+////
         MyJsonSerializer myJsonSerializer = new MyJsonSerializer();
         System.out.println(myJsonSerializer.serialize(map));
 

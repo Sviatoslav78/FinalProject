@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MyJsonSerializer extends Thread {
 
-//    static Lock lock = new ReentrantLock();
+    static Lock lock = new ReentrantLock();
 
     static Map<Class, Class> mappersCache = new HashMap<>();
 
@@ -38,30 +38,47 @@ public class MyJsonSerializer extends Thread {
     }
 
     protected Class getMapper(Class clazz) {
-        return mappersCache.get(clazz);
+        if (mappersCache.get(clazz) == null) {
+            return PojoMapper.class;
+        } else
+            return mappersCache.get(clazz);
     }
 
     public String serialize(Object obj) {
         if (obj == null) {
         } else {
             StringWriter writerAppend = new StringWriter();
+            lock.lock();
+            // Интерфейс Appendable должен быть реализован любым классом, экземпляры которого предназначаются, чтобы получить отформатированный вывод от a Formatter.
             serialize(obj, (Appendable) writerAppend);
+            lock.unlock();
             return writerAppend.toString();
         }
         return null;
     }
 
-
     protected void serialize(Object obj, Appendable writerAppend) {
-        MyJsonWriter writer = new MyJsonWriter(Streams.writerForAppendable(writerAppend));
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please, choose the writer:" +
+                "\n" + "1. In a line" +
+                "\n" + "2. With tabs and enters");
+        int choice = scanner.nextInt();
+        MyJsonWriter writer = null;
+            if (choice == 1) {
+                writer = new MyJsonWriter(Streams.writerForAppendable(writerAppend));
+            } else if (choice == 2) {
+                writer = new IndentedJsonWriter(Streams.writerForAppendable(writerAppend));
+            } else if(choice>2){
+                serialize(obj);
+            }
         if (obj.equals(null)) {
             new NullMapper().write(obj, writer);
         } else {
             Class objMapper = getMapper(obj.getClass());
             if (objMapper.equals(StringMapper.class)) {
-                if(obj.getClass().equals(String.class)){
-                new StringMapper().write((String) obj, writer);}
-                else {
+                if (obj.getClass().equals(String.class)) {
+                    new StringMapper().write((String) obj, writer);
+                } else {
                     new StringMapper().write(obj.toString(), writer);
                 }
             } else if (objMapper.equals(BooleanMapper.class)) {
