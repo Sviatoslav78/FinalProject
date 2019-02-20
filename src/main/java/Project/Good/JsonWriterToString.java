@@ -1,13 +1,10 @@
-package FinalProject;
+package Project.Good;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+public class JsonWriterToString {
 
-public class MyJsonWriterString {
     StringBuilder stringBuilder;
 
-    public MyJsonWriterString() {
+    public JsonWriterToString() {
         stringBuilder = new StringBuilder();
     }
 
@@ -25,6 +22,7 @@ public class MyJsonWriterString {
     }
 
     void writeArrayBegin() {
+
         stringBuilder.append("[");
     }
 
@@ -46,7 +44,7 @@ public class MyJsonWriterString {
 
     //записывает в низ лежащий поток число
     void writeNumber(Number n) {
-        stringBuilder.append(n.toString());
+        stringBuilder.append(n);
     }
 
     //добавляет запятую
@@ -59,16 +57,16 @@ public class MyJsonWriterString {
         stringBuilder.append(":");
     }
 
-    void writeBoolean(boolean b) {
-        stringBuilder.append(b);
+    void writeBoolean() {
+        stringBuilder.append(false);
     }
 
     void writeNull() {
         stringBuilder.append("null");
     }
 
-    public String toString() {
-       return stringBuilder.toString();
+    public void flush() {
+        stringBuilder.toString();
     }
-}
 
+}

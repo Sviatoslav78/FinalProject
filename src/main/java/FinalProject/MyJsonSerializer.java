@@ -5,8 +5,16 @@ import com.google.gson.internal.Streams;
 import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class MyJsonSerializer {
+public class MyJsonSerializer extends Thread{
+
+    static Lock lock = new ReentrantLock();
+
+    public MyJsonSerializer() {
+
+    }
 
     static Map<Class, Class> mappersCache = new HashMap<>();
 
@@ -36,7 +44,12 @@ public class MyJsonSerializer {
         if (obj == null) {
         } else {
             StringWriter writerAppend = new StringWriter();
-            serialize(obj, (Appendable) writerAppend);
+            lock.lock();
+            try{
+            serialize(obj, (Appendable) writerAppend);}
+            finally {
+                lock.unlock();
+            }
             return writerAppend.toString();
         }
         return null;

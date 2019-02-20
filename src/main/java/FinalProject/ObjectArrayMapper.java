@@ -21,27 +21,8 @@ public class ObjectArrayMapper implements JsonMapper<Object[]> {
                 } else if (o.getClass().equals(String.class)) {
                     writer.writeString((String) o);
                 } else {
-                    //new PojoMapper().write(o,writer);
-                    for (Field field : o.getClass().getDeclaredFields()) {
-                        try {
-                            field.setAccessible(true);
-                            if (field.get(o).getClass().equals(String.class)) {
-                                writer.writeString(field.getName());
-                                writer.writePropertySeparator();
-                                writer.writeString((String) field.get(o));
-
-                            } else if (field.get(o).getClass().getSuperclass().equals(Number.class)) {
-                                writer.writeString(field.getName());
-                                writer.writePropertySeparator();
-                                writer.writeNumber((Number) field.get(o));
-
-                            }
-                            writer.writeSeparator();
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
+                    new PojoMapper().write(o,writer);
                     }
-                }
                 writer.writeSeparator();
             }
             writer.writeArrayEnd();
