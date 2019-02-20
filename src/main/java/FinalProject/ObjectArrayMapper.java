@@ -9,7 +9,6 @@ public class ObjectArrayMapper implements JsonMapper<Object[]> {
     public void write(Object[] obj, MyJsonWriter writer) {
         try {
             writer.writeArrayBegin();
-
             for (Object o : obj) {
                 if (o.getClass().getSuperclass().equals(AbstractList.class)) {
                     new CollectionMapper().write((Collection) o, writer);
@@ -19,10 +18,8 @@ public class ObjectArrayMapper implements JsonMapper<Object[]> {
                     new MapMapper().write((Map) o, writer);
                 } else if (o.getClass().getSuperclass().equals(Number.class)) {
                     writer.writeNumber((Number) o);
-                    writer.writeSeparator();
                 } else if (o.getClass().equals(String.class)) {
                     writer.writeString((String) o);
-                    writer.writeSeparator();
                 } else {
                     //new PojoMapper().write(o,writer);
                     for (Field field : o.getClass().getDeclaredFields()) {
@@ -32,20 +29,20 @@ public class ObjectArrayMapper implements JsonMapper<Object[]> {
                                 writer.writeString(field.getName());
                                 writer.writePropertySeparator();
                                 writer.writeString((String) field.get(o));
-                                writer.writeSeparator();
 
                             } else if (field.get(o).getClass().getSuperclass().equals(Number.class)) {
                                 writer.writeString(field.getName());
                                 writer.writePropertySeparator();
                                 writer.writeNumber((Number) field.get(o));
-                                writer.writeSeparator();
 
                             }
+                            writer.writeSeparator();
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
                     }
                 }
+                writer.writeSeparator();
             }
             writer.writeArrayEnd();
             writer.flush();
