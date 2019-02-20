@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class MapMapper implements JsonMapper<Map> {
+
+    //creates record of Map
     @Override
     public void write(Map obj, MyJsonWriter writer) {
 

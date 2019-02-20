@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.Writer;
 
 public class IndentedJsonWriter extends MyJsonWriter {
+
+    //write symbols with tabs, enters, etc
+
     static int nIncrement = 0;
 
     public IndentedJsonWriter(Writer writer) {

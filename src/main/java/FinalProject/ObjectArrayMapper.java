@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class ObjectArrayMapper implements JsonMapper<Object[]> {
+
+    //creates record of Objects array
     @Override
     public void write(Object[] obj, MyJsonWriter writer) {
         try {

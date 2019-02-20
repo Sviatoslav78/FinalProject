@@ -3,6 +3,8 @@ package FinalProject;
 import java.io.IOException;
 
 public class NullMapper implements JsonMapper {
+
+    //creates record of null objects
     @Override
     public void write(Object obj, MyJsonWriter writer) {
         try {

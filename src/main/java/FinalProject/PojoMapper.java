@@ -6,6 +6,7 @@ import java.util.*;
 
 public class PojoMapper implements JsonMapper {
 
+    //creates record of custom class
     @Override
     public void write(Object obj, MyJsonWriter writer) {
         try {

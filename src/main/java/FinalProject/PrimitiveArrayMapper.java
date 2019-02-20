@@ -3,6 +3,8 @@ package FinalProject;
 import java.io.IOException;
 
 public class PrimitiveArrayMapper implements JsonMapper<Object[]> {
+
+    //creates record of PrimitiveTypes array
     @Override
     public void write(Object[] obj, MyJsonWriter writer) {
         try {
