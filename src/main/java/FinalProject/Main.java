@@ -32,12 +32,15 @@ public class Main {
         map.put(list2,1);
         map.put(list3,2);
 
-//        for (int i = 0; i < 5; i++) {
-//            new Thread(new MyJsonSerializer().serialize(map)).start();
-//        }
-////
         MyJsonSerializer myJsonSerializer = new MyJsonSerializer();
-        System.out.println(myJsonSerializer.serialize(map));
+
+        Runnable task = () -> {
+            System.out.println(myJsonSerializer.serialize(map));
+        };
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(task).start();
+        }
 
         Gson gson = new Gson();
         System.out.println(gson.toJson(map));
