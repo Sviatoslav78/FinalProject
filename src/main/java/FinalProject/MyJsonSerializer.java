@@ -3,6 +3,7 @@ package FinalProject;
 import com.google.gson.internal.Streams;
 
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -74,9 +75,9 @@ public class MyJsonSerializer extends Thread {
         int choice = scanner.nextInt();
         MyJsonWriter writer = null;
         if (choice == 1) {
-            writer = new MyJsonWriter(Streams.writerForAppendable(writerAppend));
+            writer = new MyJsonWriter((Writer)writerAppend);
         } else if (choice == 2) {
-            writer = new IndentedJsonWriter(Streams.writerForAppendable(writerAppend));
+            writer = new IndentedJsonWriter((Writer)writerAppend);
         } else if (choice > 2) {
             serialize(obj);
         }
