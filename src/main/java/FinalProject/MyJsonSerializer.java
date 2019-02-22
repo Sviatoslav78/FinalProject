@@ -11,50 +11,6 @@ public class MyJsonSerializer implements Serializable {
 
     static Lock lock = new ReentrantLock();
 
-    static Map<Class, Class> mappersCache = new HashMap<>();
-
-    static {
-        //BooleanMapper
-        mappersCache.put(Boolean.class, BooleanMapper.class);
-        //StringMapper
-        mappersCache.put(String.class, StringMapper.class);
-        mappersCache.put(Character.class, StringMapper.class);
-        //NumberMapper
-        mappersCache.put(Integer.class, NumberMapper.class);
-        mappersCache.put(Short.class, NumberMapper.class);
-        mappersCache.put(Integer.class, NumberMapper.class);
-        mappersCache.put(Long.class, NumberMapper.class);
-        mappersCache.put(Float.class, NumberMapper.class);
-        mappersCache.put(Double.class, NumberMapper.class);
-        //MapMapper
-        mappersCache.put(HashMap.class, MapMapper.class);
-        mappersCache.put(TreeMap.class, MapMapper.class);
-        mappersCache.put(LinkedHashMap.class, MapMapper.class);
-        //CollectionMapper
-        mappersCache.put(ArrayList.class, CollectionMapper.class);
-        mappersCache.put(LinkedList.class, CollectionMapper.class);
-        mappersCache.put(Vector.class, CollectionMapper.class);
-        mappersCache.put(Stack.class, CollectionMapper.class);
-        mappersCache.put(ArrayDeque.class, CollectionMapper.class);
-        mappersCache.put(PriorityQueue.class, CollectionMapper.class);
-        mappersCache.put(HashSet.class, CollectionMapper.class);
-        mappersCache.put(LinkedHashSet.class, CollectionMapper.class);
-        mappersCache.put(TreeSet.class, CollectionMapper.class);
-        //ArrayMappers
-        mappersCache.put(Integer[].class, PrimitiveArrayMapper.class);
-        mappersCache.put(Short[].class, PrimitiveArrayMapper.class);
-        mappersCache.put(Long[].class, PrimitiveArrayMapper.class);
-        mappersCache.put(Float[].class, PrimitiveArrayMapper.class);
-        mappersCache.put(Double[].class, PrimitiveArrayMapper.class);
-        mappersCache.put(Character[].class, PrimitiveArrayMapper.class);
-        mappersCache.put(Object[].class, ObjectArrayMapper.class);
-        mappersCache.put(String[].class, ObjectArrayMapper.class);
-    }
-
-    protected Class getMapper(Class clazz) {
-        return mappersCache.get(clazz);
-    }
-
     public String serialize(Object obj) {
         if (obj == null) {
         } else {
@@ -74,27 +30,20 @@ public class MyJsonSerializer implements Serializable {
                 "\n" + "1. In a line" +
                 "\n" + "2. With tabs and enters");
         int choice = scanner.nextInt();
+
         MyJsonWriter writer = null;
-        if (choice == 1) {
-            writer = new MyJsonWriter((Writer) writerAppend);
-        } else if (choice == 2) {
-            writer = new IndentedJsonWriter((Writer) writerAppend);
-        } else if (choice > 2) {
-            serialize(obj);
-        }
+        if (choice == 1) writer = new MyJsonWriter((Writer) writerAppend);
+        else if (choice == 2) writer = new IndentedJsonWriter((Writer) writerAppend);
 
         if (obj.getClass().getName().contains("java")) {
-            Class objMapper = getMapper(obj.getClass());
+            Class objMapper = Singleton.INSTANCE.getMapper(obj.getClass());
             //write Boolean
             if (objMapper.equals(BooleanMapper.class)) {
                 new BooleanMapper().write((Boolean) obj, writer);
                 //write String and Character
             } else if (objMapper.equals(StringMapper.class)) {
-                if (obj.getClass().equals(String.class)) {
-                    new StringMapper().write((String) obj, writer);
-                } else {
-                    new StringMapper().write(obj.toString(), writer);
-                }
+                if (obj.getClass().equals(String.class)) new StringMapper().write((String) obj, writer);
+                else new StringMapper().write(obj.toString(), writer);
                 //write Number
             } else if (objMapper.equals(NumberMapper.class)) {
                 new NumberMapper().write((Number) obj, writer);
@@ -109,11 +58,10 @@ public class MyJsonSerializer implements Serializable {
                 new PrimitiveArrayMapper().write((Object[]) obj, writer);
             } else if (objMapper.equals(ObjectArrayMapper.class)) {
                 new ObjectArrayMapper().write((Object[]) obj, writer);
-                //write POJO-custom class
             }
+            //write POJO-custom class
         } else {
             new PojoMapper().write(obj, writer);
         }
     }
 }
-
