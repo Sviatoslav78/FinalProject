@@ -2,6 +2,7 @@ package FinalProject;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Field;
 
 public class MyJsonWriter {
 
@@ -13,6 +14,7 @@ public class MyJsonWriter {
             throw new NullPointerException("out == null");
         } else {
             this.writer = writer;
+
         }
     }
 

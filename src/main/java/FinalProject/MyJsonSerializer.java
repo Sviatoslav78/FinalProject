@@ -1,12 +1,13 @@
 package FinalProject;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class MyJsonSerializer extends Thread {
+public class MyJsonSerializer implements Serializable {
 
     static Lock lock = new ReentrantLock();
 
@@ -19,7 +20,7 @@ public class MyJsonSerializer extends Thread {
         mappersCache.put(String.class, StringMapper.class);
         mappersCache.put(Character.class, StringMapper.class);
         //NumberMapper
-        mappersCache.put(Byte.class, NumberMapper.class);
+        mappersCache.put(Integer.class, NumberMapper.class);
         mappersCache.put(Short.class, NumberMapper.class);
         mappersCache.put(Integer.class, NumberMapper.class);
         mappersCache.put(Long.class, NumberMapper.class);
@@ -40,16 +41,18 @@ public class MyJsonSerializer extends Thread {
         mappersCache.put(LinkedHashSet.class, CollectionMapper.class);
         mappersCache.put(TreeSet.class, CollectionMapper.class);
         //ArrayMappers
-        mappersCache.put(Number[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Integer[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Short[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Long[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Float[].class, PrimitiveArrayMapper.class);
+        mappersCache.put(Double[].class, PrimitiveArrayMapper.class);
         mappersCache.put(Character[].class, PrimitiveArrayMapper.class);
         mappersCache.put(Object[].class, ObjectArrayMapper.class);
+        mappersCache.put(String[].class, ObjectArrayMapper.class);
     }
 
     protected Class getMapper(Class clazz) {
-        if (mappersCache.get(clazz) == null) {
-            return PojoMapper.class;
-        } else
-            return mappersCache.get(clazz);
+        return mappersCache.get(clazz);
     }
 
     public String serialize(Object obj) {
@@ -73,46 +76,44 @@ public class MyJsonSerializer extends Thread {
         int choice = scanner.nextInt();
         MyJsonWriter writer = null;
         if (choice == 1) {
-            writer = new MyJsonWriter((Writer)writerAppend);
+            writer = new MyJsonWriter((Writer) writerAppend);
         } else if (choice == 2) {
-            writer = new IndentedJsonWriter((Writer)writerAppend);
+            writer = new IndentedJsonWriter((Writer) writerAppend);
         } else if (choice > 2) {
             serialize(obj);
         }
-        if (obj.equals(null)) {
-            new NullMapper().write(obj, writer);
-        } else {
+
+        if (obj.getClass().getName().contains("java")) {
             Class objMapper = getMapper(obj.getClass());
             //write Boolean
             if (objMapper.equals(BooleanMapper.class)) {
                 new BooleanMapper().write((Boolean) obj, writer);
-            //write String and Character
+                //write String and Character
             } else if (objMapper.equals(StringMapper.class)) {
                 if (obj.getClass().equals(String.class)) {
                     new StringMapper().write((String) obj, writer);
                 } else {
                     new StringMapper().write(obj.toString(), writer);
                 }
-            //write Number
+                //write Number
             } else if (objMapper.equals(NumberMapper.class)) {
                 new NumberMapper().write((Number) obj, writer);
-            //write Map
+                //write Map
             } else if (objMapper.equals(MapMapper.class)) {
                 new MapMapper().write((Map) obj, writer);
-            //write Collection
+                //write Collection
             } else if (objMapper.equals(CollectionMapper.class)) {
                 new CollectionMapper().write((Collection) obj, writer);
-            //write Arrays
+                //write Arrays
             } else if (objMapper.equals(PrimitiveArrayMapper.class)) {
                 new PrimitiveArrayMapper().write((Object[]) obj, writer);
             } else if (objMapper.equals(ObjectArrayMapper.class)) {
                 new ObjectArrayMapper().write((Object[]) obj, writer);
-            //write POJO-custom class
-            } else if (objMapper.equals(PojoMapper.class)) {
-                new PojoMapper().write(obj, writer);
-            } else {
-                System.out.println("Not found such elementType.");
+                //write POJO-custom class
             }
+        } else {
+            new PojoMapper().write(obj, writer);
         }
     }
 }
+

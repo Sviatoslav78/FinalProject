@@ -14,27 +14,36 @@ public class PojoMapper implements JsonMapper {
             for (Field field : obj.getClass().getDeclaredFields()) {
                 try {
                     field.setAccessible(true);
-                    if (field.get(obj).getClass().equals(String.class)) {
-                        writer.writeString(field.getName());
-                        writer.writePropertySeparator();
-                        writer.writeString((String) field.get(obj));
-                        writer.writeSeparator();
+                    // check MyJsonIgnore annotation
+                    if ((field.isAnnotationPresent(MyJsonIgnore.class))) {
+                        continue;
+                    }
+                    writer.writeString(field.getName());
+                    writer.writePropertySeparator();
+                    if (field.get(obj) == null) {
+                        continue;
+                    } else if (field.get(obj).getClass().equals(String.class)) {
+                        new StringMapper().write((String) field.get(obj), writer);
                     } else if (field.get(obj).getClass().getSuperclass().equals(Number.class)) {
-                        writer.writeString(field.getName());
-                        writer.writePropertySeparator();
-                        writer.writeNumber((Number) field.get(obj));
-                    }
-                    // крешиться, добавить другие типы
-                    else if (field.get(obj).getClass().getSuperclass().equals(AbstractList.class)) {
-                        new CollectionMapper().write((Collection) obj, writer);
+                        new NumberMapper().write((Number) field.get(obj), writer);
+                    } else if (field.get(obj).getClass().getSuperclass().equals(AbstractList.class)) {
+                        new CollectionMapper().write((Collection) field.get(obj), writer);
                     } else if (field.get(obj).getClass().getSuperclass().equals(AbstractSet.class)) {
-                        new CollectionMapper().write((Collection) obj, writer);
+                        new CollectionMapper().write((Collection) field.get(obj), writer);
                     } else if (field.get(obj).getClass().getSuperclass().equals(AbstractMap.class)) {
-                        new MapMapper().write((Map) obj, writer);
-                    }
+                        new MapMapper().write((Map) field.get(obj), writer);
+                    } else if (field.get(obj).getClass().equals(Boolean.class)) {
+                        new BooleanMapper().write((Boolean) field.get(obj), writer);
+                    } else if (field.get(obj).getClass().equals(Character.class)) {
+                        new StringMapper().write(field.get(obj).toString(), writer);
+                    } else if (field.get(obj).getClass().equals(Object[].class)) {
+                        new ObjectArrayMapper().write((Object[]) field.get(obj), writer);
+                    } else
+                        new PojoMapper().write(field.get(obj), writer);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
+                writer.writeSeparator();
             }
             writer.writeObjectEnd();
             writer.flush();
