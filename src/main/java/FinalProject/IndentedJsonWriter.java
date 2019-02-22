@@ -26,7 +26,7 @@ public class IndentedJsonWriter extends MyJsonWriter {
 
     @Override
     void writeObjectEnd() throws IOException{
-        writer.write( "\r}");
+        writer.write( "\b}");
         currentLevelOblect--;
     }
 
@@ -45,8 +45,8 @@ public class IndentedJsonWriter extends MyJsonWriter {
     }
     @Override
     void writeArrayEnd() throws IOException {
-        writer.write("]" );
-        currentLevelOblect--;
+        writer.write("\b]" );
+        currentLevelArray--;
     }
 
     @Override
@@ -63,8 +63,12 @@ public class IndentedJsonWriter extends MyJsonWriter {
     void writeSeparator() throws IOException{
         if (currentLevelOblect == 1 && currentLevelArray == 1) {
             writer.write("," + "\n" + "\t" );
-        } else if (currentLevelOblect == 1){
-            writer.write("," + "\n" + "\t" );
+        } else if (currentLevelOblect == 1) {
+            writer.write("," + "\n" + "\t");
+        }
+        //новая
+        else if (currentLevelArray ==  0){
+            writer.write("," + "\n" );
         } else
             writer.write("," );
     }
@@ -89,5 +93,3 @@ public class IndentedJsonWriter extends MyJsonWriter {
         super.flush();
     }
 }
-
-

@@ -10,6 +10,11 @@ public class PrimitiveArrayMapper implements JsonMapper<Object[]> {
         try {
             writer.writeArrayBegin();
             for (Object o : obj) {
+                if (o == null) {
+                    writer.writeNull();
+                    writer.writeSeparator();
+                    continue;
+                }
                 if (o.getClass().equals(Character.class)) {
                     writer.writeString(o.toString());
                 } else {

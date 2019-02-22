@@ -35,7 +35,7 @@ public class Main {
         arrayList.add("dog");
         arrayList.add("mouse");
 
-        String[] strings = new String[]{"black", "red", "white"};
+        Object[] strings = new String[]{"black", "red", "white"};
 
         Object[] objects = new Object[]{5, list, list2, new Cat("Murzik", 5)};
 
@@ -54,18 +54,18 @@ public class Main {
         hashMap.put(2, 5);
         hashMap.put(3, 6);
 
-        Character[] c = new Character[]{'y', 'u', '\u3948'};
-        HashSet<Object> b = new HashSet<>();
-        System.out.println(b.getClass().getName());
-        System.out.println(b.getClass().getName().contains("java"));
-        b.add(cat2);
-        b.add(5);
-        b.add("Man");
-        b.add(c);
-        b.add(new Integer[]{1,2,3,4,5});
-        b.add(new String[]{"Hello","Guys"});
-        b.add(new Integer[]{1,2,3,4,5});
-        b.add(hashMap);
+        Character [] c = new Character[]{'y', 'u', '\u3948'};
+        ArrayList b = new ArrayList();
+//        System.out.println(b.getClass().getName());
+//        System.out.println(b.getClass().getName().contains("java"));
+//        b.add(cat2);
+//        b.add(5);
+//        b.add("Man");
+//        b.add(c);
+//        b.add(new Integer[]{1,2,3,4,5});
+//        b.add(new String[]{"Hello","Guys"});
+//        b.add(new Integer[]{1,2,3,4,5});
+//        b.add(hashMap);
         Object t = null;
         Object[] o = new Object[]{c, strings};
         b.add(o);
@@ -74,16 +74,21 @@ public class Main {
         x.add(new Integer[]{1, 2, 3, 4, 5});
         x.add(new String[]{"Hello", "Guys"});
         x.add(new Integer[]{1, 2, 3, 4, 5});
-        b.add(new Object[]{list, cat2, strings});
 
         //крашится b cat2
-        Object[] fin = new Object[]{strings,arrayList,map};
-
+////        Object[] fin = new Object[]{b};
+//
+        Character[] chars = new Character[4];
+        chars[0] = '1';
+        chars[1] = 'L';
+        Object[] fin = new Object[]{b};
 
         MyJsonSerializer myJsonSerializer = new MyJsonSerializer();
-        System.out.println(myJsonSerializer.serialize(fin));
+        System.out.println(myJsonSerializer.serialize(chars));
 
         Gson gson = new Gson();
-        System.out.println("GSON"+gson.toJson(fin));
+        System.out.println("GSON"+gson.toJson(chars));
+
+        System.out.println(Singleton.mappersCache.get(Boolean.class));
     }
 }

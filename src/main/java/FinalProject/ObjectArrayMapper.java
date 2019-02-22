@@ -13,6 +13,11 @@ public class ObjectArrayMapper implements JsonMapper<Object[]> {
         try {
             writer.writeArrayBegin();
             for (Object o : obj) {
+                if (o == null) {
+                    writer.writeNull();
+                    writer.writeSeparator();
+                    continue;
+                }
                 if (o.getClass().getName().contains("java")) {
                     //check affiliations with class Boolean
                     if (o.getClass().equals(Boolean.class)) {
@@ -36,7 +41,7 @@ public class ObjectArrayMapper implements JsonMapper<Object[]> {
                         new ObjectArrayMapper().write((Object[]) o, writer);
                     }
                 } else {
-                        new PojoMapper().write(o.toString(), writer);
+                        new PojoMapper().write(o, writer);
                 }
                 writer.writeSeparator();
             }
